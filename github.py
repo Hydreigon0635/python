@@ -1,5 +1,9 @@
+from __future__ import annotations
+from typing import Optional
 from typing import List
 import random
+import heapq
+from typing import Callable, Dict
 
 CELL_TYPE_START: str = 'S'
 CELL_TYPE_PASSAGE: str = ''
@@ -71,7 +75,6 @@ class Maze:
 if __name__ == '__main__':
     maze = Maze()
     print(maze)
-
-        
+  
 
 
