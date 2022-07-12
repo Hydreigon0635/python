@@ -1,0 +1,11 @@
+テーブル名　tag
+要素　タグid, x, y, 名称, 交差点id
+
+テーブル名　miti
+要素　from, to, dist, (oneway)
+
+a*star(start, goal, disable)
+{
+   now = start
+   
+}
