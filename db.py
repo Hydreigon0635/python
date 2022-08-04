@@ -9,9 +9,6 @@ sql = """CREATE TABLE IF NOT EXISTS main(id, x, y)"""
 cursor.execute(sql)
 conn.commit()
 
-cursor.execute('DELETE FROM main')
-conn.commit()
-
 sql = """INSERT INTO main VALUES(?, ?, ?)"""
 data = ((1, 100, 200))
 cursor.execute(sql, data)
