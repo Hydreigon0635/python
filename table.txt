@@ -9,3 +9,8 @@ a*star(start, goal, disable)
    now = start
    
 }
+
+テーブル名　road_tag_info
+要素：　tag_id, cross_name_1, cross_name_2
+説明：cross_name_1 : 進行方向にある交差点
+　　　cross_name_2 :　その反対方向にある交差点
