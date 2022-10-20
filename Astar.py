@@ -46,7 +46,9 @@ def a_star(start: str, goal: str,  *disable_nodes: tuple):
                 continue
 
             # cost = 実際の距離 + ゴールとの直線距離
+            print("hello")
             dist = node_info[now_node][0] + cn[1]
+            print("hello2")
             cost = euclid(cn[0], goal) + dist
             have_connect_node = True
 
@@ -105,5 +107,5 @@ def main(start_tag, goal_tag, *disable_nodes: tuple):
 
 if __name__ == '__main__':
     disable = []
-    route = main("road_001", "cross_006", *disable)
+    route = main("cross_002", "cross_006", *disable)
     print(route)

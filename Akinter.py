@@ -5,33 +5,32 @@ import cmath
 import time
 
 
-def create_oval(x_1, y_1, x_2, y_2, color:text):
-    canvas.create_oval( x_1 * 5 - 5, y_1 * 5 - 5, x_2 * 5 + 5, y_2 * 5 + 5, fill = color)
+# def create_oval(x_1, y_1, x_2, y_2, color:text):
+#     canvas.create_oval( x_1 * 5 - 5, y_1 * 5 - 5, x_2 * 5 + 5, y_2 * 5 + 5, fill = color)
 
-def set_line():
-    print('aaa')
-    cur.execute(
-        f"SELECT cross_name_1, cross_name_2, oneway FROM road_info")
-    cross_info = cur.fetchall()
-    print(cross_info)
+# def set_line():
+#     print('aaa')
+#     cur.execute(
+#         f"SELECT cross_name_1, cross_name_2, oneway FROM road_info")
+#     cross_info = cur.fetchall()
+#     print(cross_info)
 
-    for c in cross_info:
-        cur.execute(
-            f"SELECT x, y FROM cross_position WHERE cross_name == '{c[0]}'")
-        cross_position_1 = cur.fetchone()
-        create_oval(cross_position_1[0], cross_position_1[1], cross_position_1[0], cross_position_1[1], "#000000")
-        cur.execute(
-            f"SELECT x, y FROM cross_position WHERE cross_name == '{c[1]}'") 
-        cross_position_2 = cur.fetchone()
-        create_oval(cross_position_1[0], cross_position_1[1], cross_position_2[0], cross_position_2[1], "#000000")
-        if c[2] == 0:
-            canvas.create_line(cross_position_1[0] * 5, cross_position_1[1] * 5, cross_position_2[0] * 5, cross_position_2[1] * 5, tag = 'line', arrow = tkinter.FIRST)
-        elif c[2] == 1:
-            canvas.create_line(cross_position_1[0] * 5, cross_position_1[1] * 5, cross_position_2[0] * 5, cross_position_2[1] * 5, tag = 'line', arrow = tkinter.LAST)
-        elif c[2] == 2:
-            canvas.create_line(cross_position_1[0] * 5, cross_position_1[1] * 5, cross_position_2[0] * 5, cross_position_2[1] * 5, tag = 'line', arrow = tkinter.FIRST)
+#     for c in cross_info:
+#         cur.execute(
+#             f"SELECT x, y FROM cross_position WHERE cross_name == '{c[0]}'")
+#         cross_position_1 = cur.fetchone()
+#         create_oval(cross_position_1[0], cross_position_1[1], cross_position_1[0], cross_position_1[1], "#000000")
+#         cur.execute(
+#             f"SELECT x, y FROM cross_position WHERE cross_name == '{c[1]}'") 
+#         cross_position_2 = cur.fetchone()
+#         create_oval(cross_position_1[0], cross_position_1[1], cross_position_2[0], cross_position_2[1], "#000000")
+#         if c[2] == 0:
+#             canvas.create_line(cross_position_1[0] * 5, cross_position_1[1] * 5, cross_position_2[0] * 5, cross_position_2[1] * 5, tag = 'line', arrow = tkinter.FIRST)
+#         elif c[2] == 1:
+#             canvas.create_line(cross_position_1[0] * 5, cross_position_1[1] * 5, cross_position_2[0] * 5, cross_position_2[1] * 5, tag = 'line', arrow = tkinter.LAST)
+#         elif c[2] == 2:
+#             canvas.create_line(cross_position_1[0] * 5, cross_position_1[1] * 5, cross_position_2[0] * 5, cross_position_2[1] * 5, tag = 'line', arrow = tkinter.FIRST)
 
-    time.sleep(1000000)
 
 def between(tag_id, isStart):
     cur.execute(
@@ -73,6 +72,8 @@ def a_star(start: str, goal: str,  *disable_nodes: tuple):
                 continue
 
             # cost = 実際の距離 + ゴールとの直線距離
+            print("hello", now_node)
+            print(node_info)
             dist = node_info[now_node][0] + cn[1]
             cost = euclid(cn[0], goal) + dist
             have_connect_node = True
@@ -104,7 +105,7 @@ def a_star(start: str, goal: str,  *disable_nodes: tuple):
                 now_node_position = cur.fetchone()
                 if not before_node_position:
                     break
-                canvas.create_line(before_node_position[0], before_node_position[1], now_node_position[0], now_node_position[1], fill = "red")
+                # canvas.create_line(before_node_position[0], before_node_position[1], now_node_position[0], now_node_position[1], fill = "red")
                 now_node = key
                 before_node_position = now_node_position
 
@@ -121,14 +122,14 @@ def euclid(cross_name, goal_name):
     if len(node_info) == 1:
         return 0
 
-    dist_x = abs(node_info[0][1] - node_info[1][1]) ** 2
-    dist_y = abs(node_info[0][2] - node_info[1][2]) ** 2
+    dist_x = (node_info[0][1] - node_info[1][1]) ** 2
+    dist_y = (node_info[0][2] - node_info[1][2]) ** 2
     dist = abs(cmath.sqrt(dist_x + dist_y))
 
     return round(dist, 2)
 
 def main(start_tag, goal_tag, *disable_nodes: tuple):
-    set_line()
+    # set_line()
     start_cross = between(start_tag, True)
     goal_cross = between(goal_tag, False)
 
@@ -144,14 +145,14 @@ if __name__ == '__main__':
     conn = sqlite3.connect(dbname, isolation_level = None)
     cur = conn.cursor()
 
-    root = tkinter.Tk()
-    root.title(u'Canvas Sample')
-    root.geometry("800x450")
-    canvas = tkinter.Canvas(root, width = 800, height = 450)
-    canvas.place(x = 0, y = 0)
+    # root = tkinter.Tk()
+    # root.title(u'Canvas Sample')
+    # root.geometry("800x450")
+    # canvas = tkinter.Canvas(root, width = 800, height = 450)
+    # canvas.place(x = 0, y = 0)
 
     disable = []
-    route = main("cross_001", "cross_006", *disable)
+    route = main("cross_002", "cross_006", *disable)
     print(route)
 
-    root.mainloop()
+    # root.mainloop()
