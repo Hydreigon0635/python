@@ -12,6 +12,7 @@ def main():
     db_init()
     register_crosses_info()
     connect_cross_info()
+    
 
 
 def register_crosses_info():
@@ -146,3 +147,4 @@ def euclid(node_1, node_2):
 
 if __name__ == '__main__':
     main()
+    #kocsdsdjidsfeuiu
