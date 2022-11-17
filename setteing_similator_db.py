@@ -17,9 +17,9 @@ def main():
 
 def register_crosses_info():
     cross_num = 1
-
-    for x in range(1, 7):
-        for y in range(1, 7):
+    global size
+    for x in range(1, size + 1):
+        for y in range(1, size + 1):
             x_position = x * 100 + random.randint(-30, 30)
             y_position = y * 100 + random.randint(-30, 30)
             cur.execute(
@@ -28,10 +28,11 @@ def register_crosses_info():
             cross_num += 1
 
 def connect_cross_info():
+    global size
     cross_num = 0
-    while(True):
+    while(True): #東
         cross_num += 1
-        if cross_num % 6 == 0:
+        if cross_num % size == 0:
             continue
         else:
             cur.execute(
@@ -50,7 +51,7 @@ def connect_cross_info():
 
     cross_num = 0
 
-    while(True):
+    while(True): #南
         print(cross_num)
         cross_num += 1
         cur.execute(
@@ -58,7 +59,7 @@ def connect_cross_info():
         )
         node_1 = cur.fetchone()
         cur.execute(
-            f"SELECT * FROM cross_position WHERE cross_name = 'cross_{str(cross_num + 6).zfill(3)}'"
+            f"SELECT * FROM cross_position WHERE cross_name = 'cross_{str(cross_num + size).zfill(3)}'"
         )
         node_2 = cur.fetchone()
         if not node_2:
@@ -68,9 +69,9 @@ def connect_cross_info():
         )
     
     cross_num = 0
-    while(True):
+    while(True): #西
         cross_num += 1
-        if cross_num % 6 == 1:
+        if cross_num % size == 1:
             continue
         else:
             cur.execute(
@@ -88,9 +89,9 @@ def connect_cross_info():
             )
 
     cross_num = 0
-    while(True):
+    while(True): #北
         cross_num += 1
-        if cross_num <= 6:
+        if cross_num <= size:
             continue
         else:
             cur.execute(
@@ -98,7 +99,7 @@ def connect_cross_info():
             )
             node_1 = cur.fetchone()
             cur.execute(
-                f"SELECT * FROM cross_position WHERE cross_name = 'cross_{str(cross_num - 6).zfill(3)}'"
+                f"SELECT * FROM cross_position WHERE cross_name = 'cross_{str(cross_num - size).zfill(3)}'"
             )
             node_2 = cur.fetchone()
             if not node_1:
@@ -146,5 +147,6 @@ def euclid(node_1, node_2):
 
 
 if __name__ == '__main__':
+    size = 12
     main()
     #kocsdsdjidsfeuiu

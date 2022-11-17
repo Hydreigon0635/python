@@ -4,10 +4,20 @@ import sqlite3
 import cmath
 import time
 
+MAP_RATE = 5
+def map_init():
+    global delete_list
+    for d in delete_list:
+        canvas.delete(d)
+    delete_list = []
 
 def create_oval(x_1, y_1, x_2, y_2, color: str):
-    return canvas.create_oval(x_1 * 5 - 5, y_1 * 5 - 5, x_2 *
-                       5 + 5, y_2 * 5 + 5, fill=color)
+    return canvas.create_oval(x_1 * MAP_RATE - 5, y_1 * MAP_RATE - 5, x_2 *
+                       MAP_RATE + 5, y_2 * MAP_RATE + 5, fill=color)
+
+def create_line(x_1, y_1, x_2, y_2, color: str, weight: float):
+    return canvas.create_line(x_1 * MAP_RATE, y_1 * MAP_RATE, x_2 * MAP_RATE
+                       , y_2 * MAP_RATE, fill=color, width= weight)
 
 
 def set_line():
@@ -82,6 +92,9 @@ def a_star():
     global delete_list
     
     time.sleep(1)
+
+    map_init()
+
     passed_node = []
     for d in route_info[now_node]:
         print("route", d)
@@ -89,13 +102,10 @@ def a_star():
             f"SELECT x, y FROM cross_position WHERE cross_name = '{d}'")
         a = cur.fetchone()
         if(passed_node):
-            b = canvas.create_line(passed_node[0] * 5, passed_node[1] * 5, a[0] * 5, a[1] * 5, fill = 'red', width = 3)
+            b = create_line(passed_node[0], passed_node[1], a[0], a[1], 'red', 3)
             delete_list.append(b)
         passed_node = a
 
-    for d in delete_list:
-        canvas.delete(d)
-    delete_list = []
     cur.execute(
         f"SELECT x, y FROM cross_position")
     cross_position = cur.fetchall()
@@ -115,6 +125,7 @@ def a_star():
                 f"SELECT x, y FROM cross_position WHERE cross_name = '{cn[0]}'")
             res = cur.fetchone()
             a = create_oval(res[0], res[1], res[0], res[1], 'white')
+            delete_list.append(a)
             continue
 
         cur.execute(
@@ -158,10 +169,8 @@ def a_star():
             
 
     if now_node == goal_cross:
-        cur.execute(
-        f"SELECT x, y FROM cross_position WHERE cross_name = '{now_node}'")
-        cross_position = cur.fetchone()
-        create_oval(cross_position[0], cross_position[1], cross_position[0], cross_position[1], 'yellow')
+        map_init()
+
         # 経路が見つかった場合
         return (True, route_info[goal_cross])
     
@@ -185,8 +194,10 @@ def init(start_tag, goal_tag, *disable_nodes: tuple):
     global goal_cross
 
     set_line()
-    start_cross = between(start_tag, True)
-    goal_cross = between(goal_tag, False)
+    # start_cross = between(start_tag, True)
+    # goal_cross = between(goal_tag, False)
+    start_cross = start_tag
+    goal_cross = goal_tag
 
     now_node = start_cross    # 探索中のノード
     node_info = {start_cross: [0, 0]}  # 各ノードの実際の距離とコスト
@@ -205,16 +216,26 @@ def timer_func(flag=False):
     else:
         res = a_star()
         print('res[1]' , res)
-        # if(res[1]):
-        #     passed_node = None
-        #     for d in res[1]:
-        #         print("route", d)
-        #         cur.execute(
-        #             f"SELECT x, y FROM cross_position WHERE cross_name = '{d}'")
-        #         a = cur.fetchone()
-        #         if(passed_node):
-        #             canvas.create_line(passed_node[0] * 5, passed_node[1] * 5, a[0] * 5, a[1] * 5, fill = 'red', width = 3)
-        #         passed_node = a
+        if(res[1]):
+            passed_node = None
+            for d in res[1]:
+                print("route", d)
+                cur.execute(
+                    f"SELECT x, y FROM cross_position WHERE cross_name = '{d}'")
+                a = cur.fetchone()
+                if(passed_node):
+                    canvas.create_line(passed_node[0] * 5, passed_node[1] * 5, a[0] * 5, a[1] * 5, fill = 'red', width = 3)
+                passed_node = a
+
+            cur.execute(
+            f"SELECT x, y FROM cross_position WHERE cross_name = '{start_cross}'")
+            cross_position = cur.fetchone()
+            create_oval(cross_position[0], cross_position[1], cross_position[0], cross_position[1], 'yellow')
+
+            cur.execute(
+            f"SELECT x, y FROM cross_position WHERE cross_name = '{goal_cross}'")
+            cross_position = cur.fetchone()
+            create_oval(cross_position[0], cross_position[1], cross_position[0], cross_position[1], 'yellow')
 
         if not res[0]:
             root.after(5, timer_func)
@@ -239,7 +260,7 @@ if __name__ == '__main__':
     node_info = None  # 各ノードの実際の距離とコスト
     route_info = None  # あるノードまでの最短経路
 
-    if init("cross_002", "cross_006"):
+    if init("cross_000", "cross_006"):
         timer_func(True)
 
     root.mainloop()

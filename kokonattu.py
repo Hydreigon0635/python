@@ -1,25 +1,24 @@
-import sys
+import sqlite3
 import tkinter
-import random
 
-point = {"x":0,"y":0}
-
+dbname = ('./db/simulator2.db')
+conn = sqlite3.connect(dbname, isolation_level= None)
+cur = conn.cursor()
+cross_info = []
 def timer_func():
-    global point
-    print(point)
-    tmp = {"x":0, "y":0}
-    tmp["x"] = random.uniform(0, 450) 
-    tmp["y"] = random.uniform(0, 450)
-    canvas.create_oval( point["x"] - 5, point["y"] - 5, point["x"] + 5, point["y"] + 5, tag = "oval")
-    print("円の中心", point["x"], point["y"])
-    canvas.create_line(point["x"], point["y"], tmp["x"], tmp["y"], tag = "line")
-    point = tmp
-    root.after(3, timer_func)
+    cur.execute(
+        f"SELECT x, y FROM cross_position"
+    )
+    cross_info = cur.fetchall()
+    for c in cross_info:
+        print(c[0])
+        canvas.create_oval(c[0] / 1.1 - 5, c[1] / 1.1 - 5, c[0] / 1.1 + 5, c[1] / 1.1 + 5, fill = "#000000")
+        canvas.create_text(c[0] / 1.1 - 20, c[1] / 1.1 - 20, text = f"{c}")
 
 root = tkinter.Tk()
 root.title(u'Canvas Sample')
-root.geometry("800x450")
+root.geometry("1200x800")
 canvas = tkinter.Canvas(root, width = 800, height = 450)
 canvas.place(x = 0, y = 0)
-#timer_func()
+timer_func()
 root.mainloop()
